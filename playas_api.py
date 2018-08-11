@@ -2,14 +2,47 @@ import bs4 as bs
 import requests
 import js2py
 import json
-
+import asyncio
+import pyowm
 
 class PlayasApi:
 
     def __init__(self):
         # playas de bizkaia
+        self.apiTiempo = owm = pyowm.OWM('f6748bc87ddf9c819dff7dc3060ced06')
         self._playasUrl = 'http://www.bizkaia.eus/Ingurugiroa_Lurraldea/Hondartzak/listadoplayas.asp?Tem_Codigo=350&idioma=CA&dpto_biz=2&codpath_biz=2|350'
-
+        #esto deberia estar en una base de datos
+        self.coordenadas_por_id={
+            '1': [43.3466729,-3.1202796],
+            '2': [43.3466729,-3.1202796],
+            '3': [43.3466729,-3.1202796],
+            '4': [43.3466729,-3.1202796],
+            '5': [43.3466729,-3.1202796],
+            '6': [43.3466729,-3.1202796],
+            '7': [43.3466729,-3.1202796],
+            '8': [43.3466729,-3.1202796],
+            '9': [43.3466729,-3.1202796],
+            '10': [43.3466729,-3.1202796],
+            '11': [43.3466729,-3.1202796],
+            '12': [43.3466729,-3.1202796],
+            '13': [43.3466729,-3.1202796],
+            '14': [43.3466729,-3.1202796],
+            '15': [43.3466729,-3.1202796],
+            '16': [43.3466729,-3.1202796],
+            '17': [43.3466729,-3.1202796],
+            '18': [43.3466729,-3.1202796],
+            '19': [43.3466729,-3.1202796],
+            '20': [43.3466729,-3.1202796],
+            '21': [43.3466729,-3.1202796],
+            '22': [43.3466729,-3.1202796],
+            '23': [43.3466729,-3.1202796],
+            '24': [43.3466729,-3.1202796],
+            '25': [43.3466729,-3.1202796],
+            '26': [43.3466729,-3.1202796],
+            '27': [43.3466729,-3.1202796],
+            '28': [43.3466729,-3.1202796],
+            '30': [43.3466729,-3.1202796]
+        }
     def GetPlayasList(self):
         response = requests.get(self._playasUrl)
 
@@ -104,6 +137,13 @@ class PlayasApi:
             _ocupacion = 'none'
             _parking = 'none'
 
+
+        #aqui viene la asincronia necesitamos consultar varias apis en paralelo para obtener los datos
+        observation = self.apiTiempo.weather_at_coords(43.3466729,-3.1202796)
+        w = observation.get_weather()
+        temp=w.get_temperature('celsius')
+        print(temp)
+
         detail = {
             'nombre': _nombrePlaya,
             'temporada': _temporadaBanio,
@@ -124,12 +164,22 @@ class PlayasApi:
         return detail
 
 
+async def asyncInfo():
+    loop = asyncio.get_event_loop()
+    future1 = loop.run_in_executor(None, requests.get, 'http://www.google.com')
+    future2 = loop.run_in_executor(None, requests.get, 'http://www.google.co.uk')
+    response1 = await future1
+    response2 = await future2
+    print(response1.text)
+    print(response2.text)
+
 if __name__ == '__main__':
     api = PlayasApi()
-    playas=api.GetPlayasList()
-    print(playas)
-    # print(playas)
-    # api.playaDetail(30)
+   # playas=api.GetPlayasList()
+   # print(playas)
+    playa=api.playaDetail(30)
+    print(playa)
+
 
 # ids de playas problematicas
 #la playa con index 29 no exite luego el rango de playas es 1-28 30
