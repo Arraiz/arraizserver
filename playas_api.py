@@ -13,35 +13,34 @@ class PlayasApi:
         self._playasUrl = 'http://www.bizkaia.eus/Ingurugiroa_Lurraldea/Hondartzak/listadoplayas.asp?Tem_Codigo=350&idioma=CA&dpto_biz=2&codpath_biz=2|350'
         #esto deberia estar en una base de datos
         self.coordenadas_por_id={
-            '1': [43.3466729,-3.1202796],
-            '2': [43.3466729,-3.1202796],
-            '3': [43.3466729,-3.1202796],
-            '4': [43.3466729,-3.1202796],
-            '5': [43.3466729,-3.1202796],
-            '6': [43.3466729,-3.1202796],
-            '7': [43.3466729,-3.1202796],
-            '8': [43.3466729,-3.1202796],
-            '9': [43.3466729,-3.1202796],
-            '10': [43.3466729,-3.1202796],
-            '11': [43.3466729,-3.1202796],
-            '12': [43.3466729,-3.1202796],
-            '13': [43.3466729,-3.1202796],
-            '14': [43.3466729,-3.1202796],
-            '15': [43.3466729,-3.1202796],
-            '16': [43.3466729,-3.1202796],
-            '17': [43.3466729,-3.1202796],
-            '18': [43.3466729,-3.1202796],
-            '19': [43.3466729,-3.1202796],
-            '20': [43.3466729,-3.1202796],
-            '21': [43.3466729,-3.1202796],
-            '22': [43.3466729,-3.1202796],
-            '23': [43.3466729,-3.1202796],
-            '24': [43.3466729,-3.1202796],
-            '25': [43.3466729,-3.1202796],
-            '26': [43.3466729,-3.1202796],
-            '27': [43.3466729,-3.1202796],
-            '28': [43.3466729,-3.1202796],
-            '30': [43.3466729,-3.1202796]
+            '1': [43.387837, -2.996004], #arrietara
+            '2': [43.323418, -2.418899], #Arrigorri
+            '3': [43.355344, -3.019137], #arrigunaga
+            '4': [43.430436, -2.806984],#Bakio
+            '5': [43.383383, -3.003901],#Barinatxe
+            '6': [43.404563, -2.974155],#Barrika
+            '7': [43.426173, -2.729596],#Aritzatxu
+            '8': [43.432867, -2.892484],#Armintza
+            '9': [43.385058, -2.583236],#Ea
+            '10': [43.342507, -3.013517],#Ereaga
+            '11': [43.418268, -2.945359],#Gorliz
+            '12': [43.380476, -3.014484],#Gorrondatxe
+            '13': [43.363833, -2.501934],#Isuntza
+            '14': [43.382968, -2.680126],#Kanala
+            '15': [43.381846164937, -2.67851829528809],#kanalape
+            '16': [43.3628169481706, -2.49423980712891],#Karraspio
+            '17': [43.349232, -3.115733], #La Arena
+            '18': [43.409038, -2.659332],#Laga
+            '19': [43.398937, -2.685233],#Laida
+            '20': [43.4049851306295, -2.69937515258789],#laidatxu
+            '21': [43.348507, -3.119675],#Las Arenas
+            '22': [43.3951630640074, -2.98562049865723],#meñakoz
+            '23': [43.373044, -2.545325],#ogella
+            '24': [43.4112828877988, -2.94708251953125],#plentzia
+            '25': [43.3865245658954, -2.68916130065918],#San Antonio
+            '27': [43.3910778627597, -2.69182205200195],#Toña
+            '29': [43.407335, -2.698322],#Hondartzape
+            '30': [43.4130286847514, -2.95995712280273]#Muriola
         }
     def GetPlayasList(self):
         response = requests.get(self._playasUrl)
@@ -139,11 +138,11 @@ class PlayasApi:
 
 
         #aqui viene la asincronia necesitamos consultar varias apis en paralelo para obtener los datos
-        observation = self.apiTiempo.weather_at_coords(43.3466729,-3.1202796)
-        w = observation.get_weather()
-        temp=w.get_temperature('celsius')
-        print(temp)
+        observation = self.apiTiempo.three_hours_forecast_at_coords(self.coordenadas_por_id[str(id)][0],self.coordenadas_por_id[str(id)][1])
+        w = observation.get_forecast()
 
+        for weather in w:
+            print(weather.get_temperature(unit='celsius'))
         detail = {
             'nombre': _nombrePlaya,
             'temporada': _temporadaBanio,
@@ -177,7 +176,7 @@ if __name__ == '__main__':
     api = PlayasApi()
    # playas=api.GetPlayasList()
    # print(playas)
-    playa=api.playaDetail(30)
+    playa=api.playaDetail(3)
     print(playa)
 
 
