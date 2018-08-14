@@ -140,9 +140,12 @@ class PlayasApi:
         #aqui viene la asincronia necesitamos consultar varias apis en paralelo para obtener los datos
         observation = self.apiTiempo.three_hours_forecast_at_coords(self.coordenadas_por_id[str(id)][0],self.coordenadas_por_id[str(id)][1])
         w = observation.get_forecast()
+        #el array tiene [hora y temperatura a es hora]
+        _tempArray=[]
+        for weather in w.get_weathers():
+            auxArr=[weather.get_temperature(unit='celsius')['temp'],weather.get_reference_time('iso')[11:16]]
+            _tempArray.append(auxArr)
 
-        for weather in w:
-            print(weather.get_temperature(unit='celsius'))
         detail = {
             'nombre': _nombrePlaya,
             'temporada': _temporadaBanio,
@@ -158,26 +161,28 @@ class PlayasApi:
             'ocupacion': _ocupacion,
             'parking': _parking,
             'id': id,
+            'forecast':_tempArray,
+            'coordenadas':self.coordenadas_por_id[str(id)]
         }
      #   detailJson = json.dumps(detail)
         return detail
 
 
-async def asyncInfo():
-    loop = asyncio.get_event_loop()
-    future1 = loop.run_in_executor(None, requests.get, 'http://www.google.com')
-    future2 = loop.run_in_executor(None, requests.get, 'http://www.google.co.uk')
-    response1 = await future1
-    response2 = await future2
-    print(response1.text)
-    print(response2.text)
+# async def asyncInfo():
+#     loop = asyncio.get_event_loop()
+#     future1 = loop.run_in_executor(None, requests.get, 'http://www.google.com')
+#     future2 = loop.run_in_executor(None, requests.get, 'http://www.google.co.uk')
+#     response1 = await future1
+#     response2 = await future2
+#     print(response1.text)
+#     print(response2.text)
 
 if __name__ == '__main__':
     api = PlayasApi()
    # playas=api.GetPlayasList()
    # print(playas)
-    playa=api.playaDetail(3)
-    print(playa)
+    playa=api.playaDetail(17)
+    print(playa['coordenadas'])
 
 
 # ids de playas problematicas
