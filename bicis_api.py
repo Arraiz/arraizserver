@@ -5,7 +5,7 @@ import js2py
 import json
 
 
-class bicis_api:
+class bicisApi:
 
     def __init__(self):
         self.bilbaoURL = "http://www.bilbao.eus/WebServicesBilbao/WSBilbao?s=ODPRESBICI&u=OPENDATA&r=CSV&p0=A&p1=A"
@@ -17,11 +17,11 @@ class bicis_api:
         estaciones = bilbaoCSV.text.split('\r\n')
 
         for i in range(1,32):
-            listadoBicis.append(self.crearZona(estaciones[i]))
+            listadoBicis.append(self._crearZona(estaciones[i]))
 
 
         return listadoBicis
-    def crearZona(self,estacion):
+    def _crearZona(self,estacion):
         temp = estacion.split(';')
         return {
             'anclajes_averiados':temp[0],
@@ -40,7 +40,7 @@ class bicis_api:
 
 
 if __name__ == '__main__':
-    bicis = bicis_api()
+    bicis = bicisApi()
     zonas = bicis.getZonas()
     print(zonas[3]['anclajes_averiados'])
 
