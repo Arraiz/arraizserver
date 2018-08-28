@@ -12,7 +12,7 @@ api=playas_api.PlayasApi()
 CONST_API_KEY = 'thisisplayasapi'
 
 
-# subdomains
+
 
 
 @app.route('/',methods=['GET'])

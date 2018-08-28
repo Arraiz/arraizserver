@@ -182,7 +182,7 @@ if __name__ == '__main__':
    # playas=api.GetPlayasList()
    # print(playas)
     playa=api.playaDetail(17)
-    print(playa['coordenadas'])
+    print(playa['forecast'])
 
 
 # ids de playas problematicas
